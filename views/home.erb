@@ -1,0 +1,95 @@
+<html>
+<head>
+  <style>
+    body {
+        background: #eff3f6;
+    }
+    .url {
+        background-color: #f6985f;
+        padding: 2em;
+        display: inline-block;
+        -webkit-border-radius:10px;
+        -moz-border-radius:10px;
+        border-radius:10px;
+        cursor: pointer;
+        background-image: url("/title.jpg");
+        background-repeat: repeat-x;
+    }
+    form {
+        background:#fefefe;
+        border: 1px solid #C3D4DB;
+        border-top:1px;
+        -webkit-border-radius:10px;
+        -moz-border-radius:10px;
+        border-radius:10px;
+        -moz-box-shadow:rgba(0,0,0,0.15) 0 0 1px;
+        -webkit-box-shadow:rgba(0,0,0,0.15) 0 0 1px;
+        box-shadow:rgba(0,0,0,0.15) 0 0 1px;
+        color:#444;
+        font:normal 12px/14px Arial, Helvetica, Sans-serif;
+        height:50px;
+        width: 200px;
+    }
+    .page_title {
+        position: absolute;
+        top: 6px;
+        font:normal 12px/14px Arial, Helvetica, Sans-serif;
+        cursor: pointer;
+        width: 100%;
+    }
+    h1 {
+        font:normal Arial, Helvetica, Sans-serif;
+        text-shadow: -.5px 0 #f6985f, 0 .5px #f6985f, .5px 0 #f6985f, 0 -.5px #f6985f;
+    }
+    button {
+        border-radius:10px;
+        -webkit-border-radius:10px;
+        -moz-border-radius:10px;
+        background: orangered;
+        font:bold 11px/14px Verdana, Tahomma, Geneva;
+        margin-left:20px;
+        padding:7px 21px;
+    }
+    #addd {
+        border-radius:10px;
+        -webkit-border-radius:10px;
+        -moz-border-radius:10px;
+        background: orangered;
+        font:bold 11px/14px Verdana, Tahomma, Geneva;
+        padding:7px 21px;
+    }
+  </style>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+</head>
+<body>
+<%= @welcome %>
+<a href="/logout"><button>Logout</button></a>
+
+<h1 class="title">Add New Bookmark</h1>
+<form method="post" action="/url" id="form">
+  URL: <input type="text" name="url"><br>
+  <input type="submit" value="Add" id="addd">
+</form>
+<h1>Urls</h1>
+<% @urls.each do |url| %>
+    <div class="url">
+     <%
+      response = '<title>Not Found</title>'
+      begin
+      response = open(url[:url]).read
+      rescue
+      end
+      @page_title = response.match(/<title>.+<\/title>/)[0].gsub(/<\/*title>/, "")  #charlie learned me this
+     %>
+     <div class="page_title"> <b><%= @page_title %></b> </div>
+      <a href="<%= url[:url] %>"><%= url[:url] %></a>
+      <a href="/delete?url=<%= url[:url] %>"><button>Delete</button></a>
+    </div>
+<% end %>
+<script>
+  $(".url").draggable();
+</script>
+</body>
+</html>
